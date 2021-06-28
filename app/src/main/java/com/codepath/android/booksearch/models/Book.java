@@ -5,13 +5,16 @@ import android.text.TextUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 
+@Parcel
 public class Book {
     private String openLibraryId;
     private String author;
     private String title;
+    private String publishDate;
 
     public String getOpenLibraryId() {
         return openLibraryId;
@@ -24,6 +27,8 @@ public class Book {
     public String getAuthor() {
         return author;
     }
+
+    public String getPublishDate() { return publishDate; }
 
     // Get book cover from covers API
     public String getCoverUrl() {
@@ -44,6 +49,12 @@ public class Book {
             }
             book.title = jsonObject.has("title_suggest") ? jsonObject.getString("title_suggest") : "";
             book.author = getAuthor(jsonObject);
+            if (jsonObject.has("publish_date")) {
+                JSONArray dates = jsonObject.getJSONArray("publish_date");
+                book.publishDate = dates.getString(0);
+            } else {
+                book.publishDate = "";
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
